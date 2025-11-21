@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 	"todo"
 	"todo/pkg/handler"
 	"todo/pkg/repository"
@@ -68,7 +69,10 @@ func main() {
 
 	logrus.Print("TodoApp shutting down")
 
-	if err := srv.Shutdown(context.Background()); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
 		logrus.Errorf("error occured on close database: %s", err.Error())
 	}
 
