@@ -57,8 +57,10 @@ func (r *ToDoListPostgres) GetAll(userId int) ([]todo.TodoList, error) {
 func (r *ToDoListPostgres) GetById(userId, listId int) (todo.TodoList, error) {
 	var list todo.TodoList
 
-	query := fmt.Sprintf(`SELECT tl.id, tl.title, tl.description FROM %s tl 
-	INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 AND ul.list_id = $2`,
+	query := fmt.Sprintf(`SELECT tl.id, tl.title, tl.description 
+						  FROM %s tl 
+	    				  INNER JOIN %s ul on tl.id = ul.list_id 
+						  WHERE ul.user_id = $1 AND ul.list_id = $2`,
 		todoListsTable, usersListsTable)
 	err := r.db.Get(&list, query, userId, listId)
 
@@ -98,7 +100,7 @@ func (r *ToDoListPostgres) Update(userId, listId int, input todo.UpdateListInput
 
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debug(args...)
-	// logrus.Debugf("args: %s", args...)
+	// logrus.Debugf("args: %s", args...) //мой старый вариант логирования
 
 	_, err := r.db.Exec(query, args...)
 	return err
